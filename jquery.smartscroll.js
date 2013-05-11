@@ -25,6 +25,7 @@
 
 	function smartScroll ( element, options ) {
 
+		this.window = $( window )
 		this.element = element
 		this.options = $.extend( defaults, options )
 
@@ -35,11 +36,11 @@
 
 		init: function () {
 
-			var	that = this
+			var that = this
 
-			$( window ).on( 'scroll.smartScroll', $.proxy( this.monitor, this ) )
+			this.window.on( 'scroll.smartScroll', $.proxy( this.monitor, this ) )
 
-			$( window ).on( 'mousedown.smartScroll mousewheel.smartScroll keyup.smartScroll', function ( e ) {
+			this.window.on( 'mousedown.smartScroll mousewheel.smartScroll keyup.smartScroll', function ( e ) {
 				if ( that.scrolling ) {
 					that.scrolling = false
 					$( 'body' ).stop()
@@ -56,7 +57,7 @@
 			if ( ! this.scrolling ) {
 
 				var active,
-					scrollTop = $( window ).scrollTop() + this.options.offset + 1
+					scrollTop = this.window.scrollTop() + this.options.offset + 1
 
 				for ( var i = this.anchors.length; i--; ) {
 
