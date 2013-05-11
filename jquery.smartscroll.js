@@ -1,5 +1,5 @@
 /*-----------------------------------------------------------------------------------
-	smartScroll - v1.0.0 - 2013-05-11
+	smartScroll - v1.0.1 - 2013-05-11
 	https://github.com/happytodesign/smartScroll
 
 	© 2013 happytodesign.com
@@ -19,6 +19,9 @@
 		class: 'active',
 		offset: 0,
 		selector: 'a',
+
+		speed: 1000,
+		easing: 'swing',
 
 		activate: function () {}
 	}
@@ -122,7 +125,7 @@
 
 				$( 'body' ).stop().animate({
 					scrollTop: that.offsets[ href ][0] - that.options.offset
-				}, 1000, null, function() {
+				}, that.options.speed, that.options.easing, function() {
 					that.scrolling = false
 				})
 

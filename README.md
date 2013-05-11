@@ -10,7 +10,10 @@ Scrollspy and smoothscroll plugins combined. Based on Bootstrap [ScrollSpy](http
 		class: 'active',
 		offset: 0,
 		selector: 'a',
-		
+
+		speed: 1000,
+		easing: 'swing',
+
 		activate: function () {}
 	})
 	
