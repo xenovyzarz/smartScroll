@@ -20,7 +20,7 @@ Scrollspy and smoothscroll plugins combined. Based on Bootstrap [ScrollSpy](http
 ##### Properties
 
 	smartscroll				// The menu element
-	smartscroll.anchors		// List of all element's ids
+	smartscroll.ids			// List of all element's ids
 	smartscroll.current		// Currently active element
 	smartscroll.previous	// Previously active element
 	

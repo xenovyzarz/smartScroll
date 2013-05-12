@@ -37,7 +37,7 @@
 
 		refresh: function() {
 
-			this.element.anchors = []
+			this.element.ids = []
 			this.offsets = {}
 
 			var that = this
@@ -50,7 +50,7 @@
 				return $target && [[ href, [ $target.offset().top - that.options.offset  - 1, $target.offset().top + $target.outerHeight(true) - that.options.offset - 1 ] ]] || null
 
 			}).each(function() {
-				that.element.anchors.push( this[0] )
+				that.element.ids.push( this[0] )
 				that.offsets[ this[0] ] = this[1]
 			})
 		},
@@ -89,9 +89,9 @@
 				var	id,
 					scrollTop = this.window.scrollTop()
 
-				for ( var i = this.element.anchors.length; i--; ) {
+				for ( var i = this.element.ids.length; i--; ) {
 
-					var current = this.element.anchors[i]
+					var current = this.element.ids[i]
 
 					if ( scrollTop >= this.offsets[ current ][0] && scrollTop <= this.offsets[ current ][1] ) {
 						id = current
@@ -122,7 +122,7 @@
 
 			var that = this
 
-			$(this.element).on( 'click', 'a[href="' + this.element.anchors.join( '"], a[href="' ) + '"]', function( event ) {
+			$(this.element).on( 'click', 'a[href="' + this.element.ids.join( '"], a[href="' ) + '"]', function( event ) {
 
 				that._scrolling = true
 
