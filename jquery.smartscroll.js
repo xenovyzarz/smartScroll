@@ -114,7 +114,7 @@
 				undefined != this.element.previous && $( this.element ).find( 'a[href="' + this.element.previous + '"]' ).closest( parent ).removeClass( this.options.class )
 				undefined != this.element.current && $( this.element ).find( 'a[href="' + this.element.current + '"]' ).closest( parent ).addClass( this.options.class )
 
-				this.options.activate( this.element.current, this.element.previous )
+				this.options.activate( this.element )
 			}
 		},
 
