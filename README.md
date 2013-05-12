@@ -6,20 +6,20 @@ Scrollspy and smoothscroll plugins combined. Based on Bootstrap [ScrollSpy](http
 	$('nav').smartScroll({
 		offset: 0,			// Window offset
 
-		class: 'active',	// CSS class that gets applied to currently active elements
-		parent: '',			// If you want the active class to be applies to a parent element rather that the anchor tag itself, insert a selector here. For example: 'li'
+		class: 'active',	// Active element class
+		parent: '',			// Apply class to parent rather than the anchor tag, e.g. 'li'
 
-		speed: 'relative',	// Smooth scroll speed. Can be set to 'relative', so that speed gets calculated based on distance between window offset and target element position
+		speed: 'relative',	// Smooth scroll speed. Can be set to 'relative' for speed based on distance between window offset and target
 		easing: 'swing',	// Smooth scroll easing
 
 		activate: function( smartscroll ) {},		// Fires when an item gets activated
-		scrollStart: function( smartscroll ) {},	// Fires when smooth scroll starts. Note: smartscroll.current here refers to the clicked element
-		scrollEnd: function( smartscroll ) {}		// Fires when smooth scroll ends
+		scrollStart: function( smartscroll ) {},	// Fires when smooth scrolling starts. Note: smartscroll.current here refers to the clicked element
+		scrollEnd: function( smartscroll ) {}		// Fires when smooth scrolling ends
 	})
 	
 ##### Properties
 
-	smartscroll				// The menu element
+	smartscroll				// Menu element
 	smartscroll.ids			// List of all element's ids
 	smartscroll.current		// Currently active element
 	smartscroll.previous	// Previously active element
@@ -32,11 +32,11 @@ Each time you add or remove elements from the DOM, you will have to call the ref
 
 __v1.0.3__
 
-- 'refresh' positions on window resize
+- 'refresh' on window resize
 
 __v1.0.2__
 
-- 'relative' property to 'speed' option. Scroll speed gets calculated based on distance between window offset and target element position
+- 'relative' property for 'speed' option. Scroll speed gets calculated based on distance between window offset and target element position
 - 'scrollStart' and 'scrollEnd' callbacks
 
 __v1.0.1__
