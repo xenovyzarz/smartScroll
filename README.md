@@ -12,9 +12,9 @@ Scrollspy and smoothscroll plugins combined. Based on Bootstrap [ScrollSpy](http
 		speed: 'relative',	// Smooth scroll speed. Can be set to 'relative' for speed based on distance between window offset and target
 		easing: 'swing',	// Smooth scroll easing
 
-		activate: function( smartscroll ) {},		// Fires when an item gets activated
-		scrollStart: function( smartscroll ) {},	// Fires when smooth scrolling starts. Note: smartscroll.current here refers to the clicked element
-		scrollEnd: function( smartscroll ) {}		// Fires when smooth scrolling ends
+		activate: function( smartscroll ) {},	// Fires when an item gets activated
+		scrollStart: function() {},		// Fires when smooth scrolling starts
+		scrollEnd: function() {}		// Fires when smooth scrolling ends
 	})
 	
 ##### Properties
