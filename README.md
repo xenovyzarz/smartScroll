@@ -30,6 +30,10 @@ Each time you add or remove elements from the DOM, you will have to call the ref
 	
 #### Changelog
 
+__v1.0.4__
+
+- 'filter' option to filter elements on 'refresh'
+
 __v1.0.3__
 
 - 'refresh' on window resize

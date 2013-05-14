@@ -1,20 +1,23 @@
 /*!
- * jQuery smartScroll v1.0.3
+ * jQuery smartScroll v1.0.4
  * https://github.com/happytodesign/smartScroll
  *
  * Copyright 2013 happytodesign.com (mailbox@happytodesign.com)
  * Released under the MIT license
  *
- * Date: 2013-05-12
+ * Date: 2013-05-14
  */
 
 ! function( $, window ) {
 
 	var defaults = {
+
 		offset: 0,
 
-		class: 'active',
+		activeClass: 'active',
 		parent: '',
+
+		filter: '',
 
 		speed: 'relative',
 		easing: 'swing',
@@ -26,9 +29,10 @@
 
 	function smartScroll( element, options ) {
 
-		this.window = $( window )
 		this.element = element
 		this.options = $.extend( defaults, options )
+
+		this._window = $( window )
 
 		this._init()
 	}
@@ -37,49 +41,27 @@
 
 		refresh: function() {
 
-			this.element.ids = []
-			this.offsets = {}
+			this._ids = []
+			this._offsets = {}
 
-			var that = this
+			var that = this,
+				elements = $( this.element ).find( 'a[href^="#"]' )
 
-			$(this.element).find( 'a[href^="#"]' ).map(function() {
+			if ( this.options.filter.length ) {
+				elements = elements.filter( this.options.filter )
+			}
+
+			elements.map(function() {
 
 				var	href =  this.getAttribute( 'href' ),
-					$target = /^#\w/.test(href) && $( href ).length && $( href )
+					target = $( href ).length && $( href )
 
-				return $target && [[ href, [ $target.offset().top - that.options.offset  - 1, $target.offset().top + $target.outerHeight(true) - that.options.offset - 1 ] ]] || null
+				return target && [[ href, [ target.offset().top - that.options.offset, target.offset().top + target.outerHeight(true) - that.options.offset ] ]] || null
 
-			}).each(function() {
-				that.element.ids.push( this[0] )
-				that.offsets[ this[0] ] = this[1]
+			}).each(function( i ) {
+				that._ids.push( this[0] )
+				that._offsets[ this[0] ] = this[1]
 			})
-		},
-
-		_init: function() {
-
-			var	t, 
-				that = this, 
-				refresh = $.proxy( this.refresh, this )
-
-			this.window.on( 'scroll.smartScroll', $.proxy( this._monitor, this ) )
-
-			this.window.on( 'mousedown.smartScroll mousewheel.smartScroll keyup.smartScroll', function( e ) {
-				if ( that._scrolling ) {
-					that._scrolling = false
-					$( 'html, body' ).stop()
-				}
-			})
-
-			this.window.on( 'resize.smartScroll', function() {
-				clearTimeout( t )
-				t = setTimeout(function() {
-					refresh()
-				}, 100)
-			} )
-
-			this.refresh()
-			this._monitor()
-			this._smoothScroll()
 		},
 
 		_monitor: function() {
@@ -87,13 +69,15 @@
 			if ( ! this._scrolling ) {
 
 				var	id,
-					scrollTop = this.window.scrollTop()
+					ids = this._ids,
+					offsets = this._offsets,
+					scrollTop = this._window.scrollTop()
 
-				for ( var i = this.element.ids.length; i--; ) {
+				for ( var i = ids.length; i--; ) {
 
-					var current = this.element.ids[i]
+					var current = ids[i]
 
-					if ( scrollTop >= this.offsets[ current ][0] && scrollTop <= this.offsets[ current ][1] ) {
+					if ( scrollTop >= offsets[ current ][0] && scrollTop <= offsets[ current ][1] ) {
 						id = current
 						break;
 					}
@@ -102,17 +86,45 @@
 			}
 		},
 
+		_init: function() {
+
+			this.refresh()
+			this._monitor()
+			this._smoothScroll()
+
+			var	t,
+				w = this._window,
+				that = this,
+				refresh = $.proxy( this.refresh, this )
+
+			w.on( 'scroll.smartScroll', $.proxy( this._monitor, this ) )
+
+			w.on( 'mousedown.smartScroll mousewheel.smartScroll keyup.smartScroll', function() {
+				if ( that._scrolling ) {
+					that._scrolling = false
+					$( 'html, body' ).stop()
+				}
+			})
+
+			w.on( 'resize.smartScroll', function() {
+				clearTimeout(t)
+				t = setTimeout(function() {
+					refresh()
+				}, 100)
+			})
+		},
+
 		_activate: function( id ) {
 
 			if ( this.element.current != id ) {
 
-				this.element.previous = this.element.current
-				this.element.current = id
-
-				var parent = this.options.parent || 'a'
+				var previous = this.element.previous = this.element.current,
+					current = this.element.current = id,
+					parent = this.options.parent || 'a',
+					activeClass = this.options.activeClass || 'active'
 				
-				undefined != this.element.previous && $( this.element ).find( 'a[href="' + this.element.previous + '"]' ).closest( parent ).removeClass( this.options.class )
-				undefined != this.element.current && $( this.element ).find( 'a[href="' + this.element.current + '"]' ).closest( parent ).addClass( this.options.class )
+				undefined != previous && $( this.element ).find( 'a[href="' + previous + '"]' ).closest( parent ).removeClass( activeClass )
+				undefined != current && $( this.element ).find( 'a[href="' + current + '"]' ).closest( parent ).addClass( activeClass )
 
 				this.options.activate( this.element )
 			}
@@ -122,20 +134,19 @@
 
 			var that = this
 
-			$(this.element).on( 'click', 'a[href="' + this.element.ids.join( '"], a[href="' ) + '"]', function( event ) {
+			$( this.element ).on( 'click', 'a[href="' + this._ids.join( '"], a[href="' ) + '"]', function( event ) {
 
 				that._scrolling = true
 
 				that.options.scrollStart()
-
-				var	href = this.getAttribute( 'href' ),
-					destination = that.offsets[ href ][0] + 1
-					speed = 'relative' == that.options.speed && Math.abs( ( that.offsets[ href ][0] - that.options.offset ) - that.window.scrollTop() ) || that.options.speed
+					
+				var	href = this.getAttribute( 'href' )
+					speed = 'relative' == that.options.speed && Math.abs( ( that._offsets[ href ][0] - that.options.offset ) - that._window.scrollTop() ) || that.options.speed
 
 				that._activate( href )
 
 				$( 'html, body' ).stop().animate({
-					scrollTop: destination
+					scrollTop: that._offsets[ href ][0]
 				}, speed, that.options.easing, function() {
 					that._scrolling = false
 					that.options.scrollEnd()
