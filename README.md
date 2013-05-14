@@ -2,19 +2,20 @@ Scrollspy and smoothscroll plugins combined. Based on Bootstrap [ScrollSpy](http
 
 
 #### Usage
-
-	$('nav').smartScroll({
-		offset: 0,			// Window offset
-
-		class: 'active',	// Active element class
-		parent: '',			// Apply class to parent rather than the anchor tag, e.g. 'li'
-
-		speed: 'relative',	// Smooth scroll speed. Can be set to 'relative' for speed based on distance between window offset and target
-		easing: 'swing',	// Smooth scroll easing
-
-		activate: function( smartscroll ) {},	// Fires when an item gets activated
-		scrollStart: function() {},		// Fires when smooth scrolling starts
-		scrollEnd: function() {}		// Fires when smooth scrolling ends
+	$( window ).load(function() {
+		$('nav').smartScroll({
+			offset: 0,			// Window offset
+	
+			class: 'active',	// Active element class
+			parent: '',			// Apply class to parent rather than the anchor tag, e.g. 'li'
+	
+			speed: 'relative',	// Smooth scroll speed. Can be set to 'relative' for speed based on distance between window offset and target
+			easing: 'swing',	// Smooth scroll easing
+	
+			activate: function( smartscroll ) {},	// Fires when an item gets activated
+			scrollStart: function() {},		// Fires when smooth scrolling starts
+			scrollEnd: function() {}		// Fires when smooth scrolling ends
+		})
 	})
 	
 #### Properties
