@@ -1,8 +1,8 @@
-Scrollspy and smoothscroll plugins combined. Based on Bootstrap [ScrollSpy](http://twitter.github.io/bootstrap/javascript.html#scrollspy). I've made this mainly to understand how jQuery plugins work.
+Scrollspy and smoothscroll plugins combined. I've made this mainly to understand how jQuery plugins work.
 
 
 #### Usage
-	$( window ).load(function() {
+	$(window).load(function() {
 		$('nav').smartScroll({
 			offset: 0,			// Window offset
 	
