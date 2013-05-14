@@ -17,7 +17,7 @@ Scrollspy and smoothscroll plugins combined. Based on Bootstrap [ScrollSpy](http
 		scrollEnd: function() {}		// Fires when smooth scrolling ends
 	})
 	
-##### Properties
+#### Properties
 
 	smartscroll				// Menu element
 	smartscroll.ids			// List of all element's ids
