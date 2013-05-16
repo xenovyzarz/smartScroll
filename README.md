@@ -4,13 +4,16 @@ Scrollspy and smoothscroll plugins combined. I've made this mainly to understand
 #### Usage
 	$(window).on('load', function() {
 		$('nav').smartScroll({
-			offset: 0,			// Window offset
+			offset: 0,				// Window offset
 	
-			class: 'active',	// Active element class
-			parent: '',			// Apply class to parent rather than the anchor tag, e.g. 'li'
+			activeClass: 'active',	// Active element class
+			parent: '',				// Apply class to parent rather than the anchor tag, e.g. 'li'
 	
-			speed: 'relative',	// Smooth scroll speed. Can be set to 'relative' for speed based on distance between window offset and target
-			easing: 'swing',	// Smooth scroll easing
+			filter: '',				// Filter out unwanted elements
+			hash: false,			// Change hash on scroll
+			
+			speed: 'relative',		// Smooth scroll speed. Can be set to 'relative' for speed based on distance between window offset and target
+			easing: 'swing',		// Smooth scroll easing
 	
 			activate: function( smartscroll ) {},	// Fires when an item gets activated
 			scrollStart: function() {},		// Fires when smooth scrolling starts
@@ -20,16 +23,20 @@ Scrollspy and smoothscroll plugins combined. I've made this mainly to understand
 	
 #### Properties
 
-	smartscroll				// Menu element
-	smartscroll.ids			// List of all element's ids
-	smartscroll.current		// Currently active element
-	smartscroll.previous	// Previously active element
+	smartscroll				// Parent menu
+	smartscroll.ids			// List of all ids
+	smartscroll.current		// Currently active anchor
+	smartscroll.previous	// Previously active anchor
 	
 Each time you add or remove elements from the DOM, you will have to call the refresh method:
 
 	$('nav').smartScroll('refresh')
-	
+
 #### Changelog
+
+__v1.1.0__
+
+- 'hash' option enables hash change on scroll using HTML5 History API
 
 __v1.0.4__
 

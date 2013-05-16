@@ -1,11 +1,11 @@
 /*!
- * jQuery smartScroll v1.0.4
+ * jQuery smartScroll v1.1.0
  * https://github.com/happytodesign/smartScroll
  *
  * Copyright 2013 happytodesign.com (mailbox@happytodesign.com)
  * Released under the MIT license
  *
- * Date: 2013-05-14
+ * Date: 2013-05-15
  */
 
 ! function( $, window ) {
@@ -18,6 +18,7 @@
 		parent: '',
 
 		filter: '',
+		hash: false,
 
 		speed: 'relative',
 		easing: 'swing',
@@ -41,7 +42,7 @@
 
 		refresh: function() {
 
-			this._ids = []
+			this.element.ids = []
 			this._offsets = {}
 
 			var that = this,
@@ -58,32 +59,10 @@
 
 				return target && [[ href, [ target.offset().top - that.options.offset, target.offset().top + target.outerHeight(true) - that.options.offset ] ]] || null
 
-			}).each(function( i ) {
-				that._ids.push( this[0] )
+			}).each(function() {
+				that.element.ids .push( this[0] )
 				that._offsets[ this[0] ] = this[1]
 			})
-		},
-
-		_monitor: function() {
-
-			if ( ! this._scrolling ) {
-
-				var	id,
-					ids = this._ids,
-					offsets = this._offsets,
-					scrollTop = this._window.scrollTop()
-
-				for ( var i = ids.length; i--; ) {
-
-					var current = ids[i]
-
-					if ( scrollTop >= offsets[ current ][0] && scrollTop <= offsets[ current ][1] ) {
-						id = current
-						break;
-					}
-				}
-				id ? this._activate( id ) : this._activate()
-			}
 		},
 
 		_init: function() {
@@ -92,8 +71,7 @@
 			this._monitor()
 			this._smoothScroll()
 
-			var	t,
-				w = this._window,
+			var	w = this._window,
 				that = this,
 				refresh = $.proxy( this.refresh, this )
 
@@ -107,24 +85,62 @@
 			})
 
 			w.on( 'resize.smartScroll', function() {
-				clearTimeout(t)
-				t = setTimeout(function() {
+				clearTimeout( this._refreshTimer )
+				this._refreshTimer = setTimeout(function() {
 					refresh()
-				}, 100)
+				}, 25)
 			})
+		},
+
+		_monitor: function() {
+
+			if ( ! this._scrolling ) {
+
+				var	id,
+					ids = this.element.ids,
+					offsets = this._offsets,
+					scrollTop = this._window.scrollTop()
+
+				for ( var i = ids.length; i--; ) {
+
+					var current = ids[i]
+
+					if ( scrollTop >= offsets[ current ][0] && scrollTop <= offsets[ current ][1] ) {
+						$('a[href="' + id + '"]').trigger('click')
+						id = current
+						break
+					}
+				}
+				id ? this._activate( id ) : this._activate()
+			}
 		},
 
 		_activate: function( id ) {
 
 			if ( this.element.current != id ) {
 
-				var previous = this.element.previous = this.element.current,
+				var	previous = this.element.previous = this.element.current,
 					current = this.element.current = id,
 					parent = this.options.parent || 'a',
 					activeClass = this.options.activeClass || 'active'
-				
+
 				undefined != previous && $( this.element ).find( 'a[href="' + previous + '"]' ).closest( parent ).removeClass( activeClass )
 				undefined != current && $( this.element ).find( 'a[href="' + current + '"]' ).closest( parent ).addClass( activeClass )
+
+				if ( this.options.hash ) {
+					var hash = current
+
+					if ( undefined == hash ) {
+						hash = window.location.pathname
+					}
+
+					hash = hash + window.location.search
+
+					clearTimeout( this._hashTimer )
+					this._hashTimer = setTimeout(function() {
+						history.replaceState( {}, '', hash )
+					}, 250)
+				}
 
 				this.options.activate( this.element )
 			}
@@ -134,13 +150,15 @@
 
 			var that = this
 
-			$( this.element ).on( 'click', 'a[href="' + this._ids.join( '"], a[href="' ) + '"]', function( event ) {
+			$( this.element ).on( 'click', 'a[href="' + this.element.ids.join( '"], a[href="' ) + '"]', function( event ) {
+
+				event.preventDefault()
 
 				that._scrolling = true
 
 				that.options.scrollStart()
 					
-				var	href = this.getAttribute( 'href' )
+				var	href = this.getAttribute( 'href' ),
 					speed = 'relative' == that.options.speed && Math.abs( ( that._offsets[ href ][0] - that.options.offset ) - that._window.scrollTop() ) || that.options.speed
 
 				that._activate( href )
@@ -152,7 +170,7 @@
 					that.options.scrollEnd()
 				})
 
-				event.preventDefault()
+				
 			})
 		}
 	}
