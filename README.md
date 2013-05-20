@@ -18,8 +18,8 @@ Scrollspy and smoothscroll plugins combined. I've made this mainly to understand
 			activate: function( smartscroll ) {},	// Fires when an item gets activated
 			scrollStart: function() {},		// Fires when smooth scrolling starts
 			scrollEnd: function() {}		// Fires when smooth scrolling ends
-		})
-	})
+		});
+	});
 	
 #### Properties
 
@@ -30,7 +30,7 @@ Scrollspy and smoothscroll plugins combined. I've made this mainly to understand
 	
 Each time you add or remove elements from the DOM, you will have to call the refresh method:
 
-	$('nav').smartScroll('refresh')
+	$('nav').smartScroll('refresh');
 
 #### Changelog
 
