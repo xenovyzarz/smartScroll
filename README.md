@@ -30,30 +30,3 @@ Scrollspy and smoothscroll plugins combined. I've made this mainly to understand
 Each time you add or remove elements from the DOM, you will have to call the refresh method:
 
 	$('nav').smartScroll('refresh');
-
-#### Changelog
-
-__v1.1.0__
-
-- 'hash' option enables hash change on scroll using HTML5 History API
-
-__v1.0.4__
-
-- 'filter' option to filter elements on 'refresh'
-
-__v1.0.3__
-
-- 'refresh' on window resize
-
-__v1.0.2__
-
-- 'relative' property for 'speed' option. Scroll speed gets calculated based on distance between window offset and target element position
-- 'scrollStart' and 'scrollEnd' callbacks
-
-__v1.0.1__
-
-- 'speed', 'easing' options and 'activate' callback
-	
-__v1.0.0__
-
-- Initial release
