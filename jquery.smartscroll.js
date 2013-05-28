@@ -110,7 +110,6 @@
 					var current = ids[i];
 
 					if ( scrollTop >= offsets[ current ][0] && scrollTop <= offsets[ current ][1] ) {
-						$( 'a[href="' + id + '"]' ).trigger( 'click' );
 						id = current;
 						break;
 					}
