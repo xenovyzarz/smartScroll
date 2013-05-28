@@ -23,10 +23,9 @@ Scrollspy and smoothscroll plugins combined. I've made this mainly to understand
 	
 #### Properties
 
-	smartscroll				// Parent menu
-	smartscroll.ids			// List of all ids
-	smartscroll.current		// Currently active anchor
-	smartscroll.previous	// Previously active anchor
+	smartscroll.ids			// List of all resolvable ids
+	smartscroll.current		// Currently active id
+	smartscroll.previous	// Previously active id
 	
 Each time you add or remove elements from the DOM, you will have to call the refresh method:
 
