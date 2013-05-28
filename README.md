@@ -4,7 +4,7 @@ Scrollspy and smoothscroll plugins combined. I've made this mainly to understand
 #### Usage
 	$(window).on('load', function() {
 		$('nav').smartScroll({
-			offset: 0,				// Scroll offset (ex. if you have a fixed header)
+			offset: 0,				// Scroll offset (e.g. you have a fixed header)
 	
 			activeClass: 'active',	// Active element class
 			parent: '',				// Apply class to parent rather than the anchor tag, e.g. 'li'
