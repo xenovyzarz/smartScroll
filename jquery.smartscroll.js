@@ -1,11 +1,11 @@
 /*!
- * jQuery smartScroll v1.1.0
+ * jQuery smartScroll v1.2.0
  * https://github.com/happytodesign/smartScroll
  *
  * Copyright 2013 happytodesign.com (mailbox@happytodesign.com)
  * Released under the MIT license
  *
- * Date: 2013-05-15
+ * Date: 2013-06-01
  */
 
 ! (function( $ ) {
@@ -17,12 +17,13 @@
 		offset: 0,
 
 		activeClass: 'active',
-		parent: '',
+		activeParent: '',
 
 		filter: '',
 		hash: false,
 
 		speed: 'relative',
+		maxSpeed: 2000,
 		easing: 'swing',
 
 		activate: function() {},
@@ -49,23 +50,23 @@
 			this.element.ids = [];
 			this._offsets = {};
 
-			var that = this,
-				elements = $( this.element ).find( 'a[href^="#"]' );
-
-			if ( this.options.filter.length ) {
+			var	that = this,
+				elements = $( this.element ).find( '[href^="#"], [data-target^="#"]' );
+				 
+			if ( this.options.filter ) {
 				elements = elements.filter( this.options.filter );
 			}
 
-			elements.map(function() {
+			elements.each(function() {
 
-				var	href =  this.getAttribute( 'href' ),
-					target = $( href ).length && $( href );
+				var	id =  this.getAttribute( 'href' ) || $( this ).data( 'target' ),
+					target = $( id ).length && $( id );
 
-				return target && [[ href, [ target.offset().top - that.options.offset, target.offset().top + target.outerHeight(true) - that.options.offset ] ]] || null;
-
-			}).each(function() {
-				that.element.ids .push( this[0] );
-				that._offsets[ this[0] ] = this[1];
+				if ( target ) {
+					this.setAttribute( 'data-target', id );
+					that.element.ids.push( id );
+					that._offsets[ id ] = [ target.offset().top - that.options.offset, target.offset().top + target.outerHeight(true) - that.options.offset ];
+				}
 			});
 		},
 
@@ -120,15 +121,27 @@
 
 		_activate: function( id ) {
 
-			if ( this.element.current !== id ) {
+			var element = this.element;
 
-				var	previous = this.element.previous = this.element.current,
-					current = this.element.current = id,
-					parent = this.options.parent || 'a',
+			if ( element.current !== id ) {
+
+				element.previous = element.current;
+
+				var	current = element.current = id,
+					currentElement = $( element ).find( '[data-target="' + current + '"]' ),
+					activeParent = this.options.activeParent,
 					activeClass = this.options.activeClass || 'active';
 
-				undefined !== previous && $( this.element ).find( 'a[href="' + previous + '"]' ).closest( parent ).removeClass( activeClass );
-				undefined !== current && $( this.element ).find( 'a[href="' + current + '"]' ).closest( parent ).addClass( activeClass );
+				$( element ).find( '.' + activeClass ).removeClass( activeClass );
+
+				if ( undefined !== current ) {
+					if ( currentElement.closest( activeParent, element ).length ) {
+						currentElement.closest( activeParent, element ).addClass( activeClass );
+					}
+					else {
+						currentElement.addClass( activeClass );
+					}
+				}
 
 				if ( this.options.hash ) {
 					var hash = current;
@@ -145,7 +158,7 @@
 					}, 250);
 				}
 
-				this.options.activate( this.element );
+				this.options.activate( element );
 			}
 		},
 
@@ -153,20 +166,25 @@
 
 			var that = this;
 
-			$( this.element ).on( 'click', 'a[href="' + this.element.ids.join( '"], a[href="' ) + '"]', function( event ) {
+			$( that.element ).on( 'click', '[data-target="' + that.element.ids.join( '"], [data-target="' ) + '"]', function( event ) {
 
 				event.preventDefault();
 
 				that._scrolling = true;
 
 				that.options.scrollStart();
-				var	href = this.getAttribute( 'href' ),
-					speed = 'relative' === that.options.speed && Math.abs( ( that._offsets[ href ][0] - that.options.offset ) - that._window.scrollTop() ) || that.options.speed;
 
-				that._activate( href );
+				var	id = this.getAttribute( 'data-target' ),
+					speed = 'relative' === that.options.speed && Math.abs( ( that._offsets[ id ][0] - that.options.offset ) - that._window.scrollTop() ) || that.options.speed;
+
+				if ( speed > that.options.maxSpeed ) {
+					speed = that.options.maxSpeed;
+				}
+
+				that._activate( id );
 
 				$( 'html, body' ).stop().animate({
-					scrollTop: that._offsets[ href ][0]
+					scrollTop: that._offsets[ id ][0]
 				}, speed, that.options.easing, function() {
 					that._scrolling = false;
 					that.options.scrollEnd();
@@ -177,7 +195,7 @@
 
 	$.fn.smartScroll = function( options ) {
 		return this.each(function() {
-			var scroll = new SmartScroll( this, options );
+			new SmartScroll( this, options );
 		});
 	};
 
